@@ -1,0 +1,411 @@
+﻿@using Client.Pages.OtherPages.DoctorPages
+@using Client.Pages.OtherPages.OvertimePages
+@using Syncfusion.Blazor.Navigations
+@implements IDisposable
+@if (allState.ShowEmployee)
+{
+    if (ShowMainPage)
+    {
+        <div class="container-fluid mt-5">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card-header">
+                        <button class="btn btn-outline-success" @onclick="ShowAddOrUpdateEmployeeButtonClicked">
+                            <i class="bi bi-plus-circle-dotted">Add Employee</i>
+                        </button>
+                    </div>  @* <- delete div *@ 
+                            <div class="card-body">
+                        @{
+                            var Tool = (new List<string>() { "Search", "ExcelExport", "PdfExport", "Print" });
+                        }
+                        <SfGrid DataSource="@Employees" AllowPaging="true" AllowSorting="true" Toolbar="@Tool" AllowExcelExport="true" AllowPdfExport="true" @ref="DefaultGrid">
+                            <GridColumns>
+                                <GridColumn HeaderText="Employee Image">
+                                    <Template>
+                                        @{
+                                            var employee = (context as Employee);
+                                            <div class="image">
+                                                <img src="@employee!.Photo" alt="@employee.Name" width="150" height="150"/>
+                                            </div>
+                                        }
+                                    </Template>
+                                </GridColumn>
+                                <GridColumn Field=@nameof(Employee.CivilId) HeaderText="Civil Id"></GridColumn>
+                                <GridColumn Field=@nameof(Employee.FileNumber) HeaderText="File Number"></GridColumn>
+                                <GridColumn Field=@nameof(Employee.Name) HeaderText="Name"></GridColumn>
+                                <GridColumn Field=@nameof(Employee.TelephoneNumber) HeaderText="Telephone"></GridColumn>
+                                <GridColumn Field=@nameof(Employee.JobName) HeaderText="Job Name"></GridColumn>
+                                <GridColumn Field=@nameof(Employee.Branch.Name) HeaderText="Branch"></GridColumn>
+                                <GridColumn Field=@nameof(Employee.Town.Name) HeaderText="Town"></GridColumn>
+
+                                <GridColumn HeaderText="Menu" HeaderTextAlign="TextAlign.Left">
+                                    <Template>
+                                        @{
+                                            var employee = (context as Employee);
+                                            <i class="bi bi-menu-down textprimary" id="cursorStyle" @onclick="() => ShowMenuPopUp(employee!)"></i>
+                                        }
+                                    </Template>
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                    <div class="card-footer"></div>
+                    
+                </div>
+            </div>
+        </div>
+    }
+}
+<AddOrUpdateEmployeePage @ref="addOrUpdateEmployee"
+                         Employee="Employee"
+                         ShowAddOrUpdateEmployee="ShowAddOrUpdatePage"
+                         NotifyParentFormCloseClicked="NotifyParentFormCloseClicked"
+                         Countries="DefaultCountries"
+                         Cities="SelectedCities"
+                         Towns="SelectedTowns"
+                         GeneralDepartments="DefaultGeneralDepartments"
+                         Departments="SelectedDepartments"
+                         Branches="SelectedBranches"
+                         HandleCountrySelectedEvent="HandleCountrySelectedEvent"
+                         HandleCitySelectedEvent="HandleCitySelectedEvent"
+                         HandleGeneralDepartmentSelectedEvent="HandleGeneralDepartmentSelectedEvent"
+                         HandleDepartmentSelectedEvent="HandleDepartmentSelectedEvent"
+                         HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent">
+</AddOrUpdateEmployeePage>
+
+<ContextMenu @ref="contextMenu" 
+             HandleDeleteClicked="DeleteClicked"
+             HandleEditClicked="EditClicked"
+             HandleViewClicked="ViewClicked"
+             HandleAddHealthClicked="AddHealthClicked"
+             HandleAddOvertimeClicked="AddOvertimeClicked"
+             HandleAddSanctionClicked="AddSanctionClicked"
+             HandleAddVacationClicked="AddVacationClicked"/>
+
+<EmployeeDetailPage EmployeeDetails="Employee"
+                    ShowDetailsPage="ShowDetailsPage"
+                    HandleDetailsPageCloseBtnClicked="HandleDetailsPageCloseBtnClicked" />
+
+<DoctorDialog @ref="doctorDialog" Doctor="Doctor" HandleSaveOperationEvent="SaveHealthEvent" />
+<OvertimeDialog @ref="overtimeDialog" ItemModel="Overtime" OvertimeTypes="OvertimeTypes" HandleSaveOperationEvent="SaveOvertimeEvent" />
+<SanctionDialog @ref="sanctionDialog" ItemModel="Sanction" SanctionTypes="SanctionTypes" HandleSaveOperationEvent="SaveSanctionEvent" />
+<VacationDialog @ref="vacationDialog" ItemModel="Vacation" VacationTypes="VacationTypes" HandleSaveOperationEvent="SaveVacationEvent" />
+
+@code {
+    AddOrUpdateEmployeePage? addOrUpdateEmployee;
+    private SfGrid<Employee>? DefaultGrid;
+    public bool IsLoading { get; set; } = false;
+
+    public List<Employee> Employees { get; set; } = [];
+    public Employee Employee { get; set; } = new();
+
+    //Country / City / Town
+    public List<Country> DefaultCountries { get; set; } = [];
+    public List<Town> DefaultTowns { get; set; } = [];
+    public List<City> DefaultCities { get; set; } = [];
+
+    //General Department / Department / Branch
+    public List<GeneralDepartment> DefaultGeneralDepartments { get; set; } = [];
+    public List<Department> DefaultDepartments { get; set; } = [];
+    public List<Branch> DefaultBranches { get; set; } = [];
+
+    public List<Department> SelectedDepartments { get; set; } = [];
+    public List<Branch> SelectedBranches { get; set; } = [];
+    public List<City> SelectedCities { get; set; } = [];
+    public List<Town> SelectedTowns { get; set; } = [];
+
+    //country select
+    private void HandleCountrySelectedEvent(int countryId) =>
+    SelectedCities = DefaultCities.Where(c => c.CountryId == countryId).ToList();
+
+    //city select
+    private void HandleCitySelectedEvent(int cityId) =>
+    SelectedTowns = DefaultTowns.Where(t => t.CityId == cityId).ToList();
+
+    //General department select
+    void HandleGeneralDepartmentSelectedEvent(int generalDepartmentId) =>
+    SelectedDepartments = DefaultDepartments.Where(gd => gd.GeneralDepartmentId == generalDepartmentId).ToList();
+
+    //Department select
+    void HandleDepartmentSelectedEvent(int departmentId) =>
+    SelectedBranches = DefaultBranches.Where(d => d.DepartmentId == departmentId).ToList();
+
+
+    //notify parent when add or update form is closed
+    private async Task NotifyParentFormCloseClicked()
+    {
+        ShowMainPage = true;
+        ShowAddOrUpdatePage = false;
+        await LoadEmployees();
+        SelectedEmployee = new(); 
+    }
+
+    ContextMenu? contextMenu;
+    void ShowMenuPopUp(Employee employee)
+    {
+        SelectedEmployee = employee;
+        contextMenu!.OpenContextMenu();
+    }
+
+    private async Task LoadDefaults()
+    {
+        DefaultCountries = await countryService.GetAll(Constants.CountryBaseUrl);
+        DefaultCities = await cityService.GetAll(Constants.CityBaseUrl);
+        DefaultTowns = await townService.GetAll(Constants.TownBaseUrl);
+
+        DefaultGeneralDepartments = await generalDepartmentService.GetAll(Constants.GeneralDepartmentBaseUrl);
+        DefaultDepartments = await departmentService.GetAll(Constants.DepartmentBaseUrl);
+        DefaultBranches = await branchService.GetAll(Constants.BranchBaseUrl);
+    }
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        allState.Action += StateHasChanged;
+        await LoadEmployees();
+        await LoadDefaults();
+        await GetOvertimeTypes();
+        await GetVacationTypes();
+        await GetSanctionTypes();
+    }
+
+    private async Task LoadEmployees()
+    {
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+            Console.WriteLine("Calling employeeService.GetAll...");
+
+            var response = await employeeService.GetAll(Constants.EmployeeBaseUrl);
+            Console.WriteLine($"Service returned {response.Count} employees");
+
+            Employees = response;
+            Console.WriteLine($"Employees list now has {Employees.Count} items");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in LoadEmployees: {ex}");
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    public Employee SelectedEmployee { get; set; } = new();
+
+    async Task HandleSaveEmployeeClickedEvent(Employee employee)
+    {
+        bool successCheck = false;
+
+        if (employee.Id > 0)
+        {
+            var result = await employeeService.Update(employee, Constants.EmployeeBaseUrl);
+            successCheck = await DisplayMessage(result.Flag, result.Message);
+        }
+        else
+        {
+            var response = await employeeService.Insert(employee, Constants.EmployeeBaseUrl);
+            successCheck = await DisplayMessage(response.Flag, response.Message);
+
+        }
+
+        if (successCheck)
+            addOrUpdateEmployee!.ClearContent();
+        
+    }
+
+    private async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if (flag)
+        {
+            await dialogService.AlertAsync(message, "Success Operation");
+            return true;
+        }
+        else
+        {
+            await dialogService.AlertAsync(message, "Alert");
+            return false;
+        }
+    }
+
+    public bool ShowMainPage { get; set; } = true;
+    public bool ShowAddOrUpdatePage { get; set; } = false;
+    void ShowAddOrUpdateEmployeeButtonClicked()
+    {
+        ShowMainPage = false;
+        ShowAddOrUpdatePage = true;
+    }
+
+   
+    DoctorDialog? doctorDialog;
+    Doctor Doctor = new();
+    private void AddHealthClicked()
+    {
+        Doctor.EmployeeId = SelectedEmployee.Id;
+        contextMenu!.CloseContextMenu();
+        doctorDialog!.OpenDialog();
+    }
+
+    async Task SaveHealthEvent(Doctor item)
+    {
+        item.EmployeeId = SelectedEmployee.Id;
+        var (flag, message) = await doctorService.Insert(item, Constants.DoctorBaseUrl);
+        var response = await DisplayMessage(flag, message);
+        if (response)
+        {
+            SelectedEmployee = new();
+            Doctor = new();
+            doctorDialog!.CloseDialog();
+        }
+    }
+
+    
+
+    public void Dispose() => allState.Action -= StateHasChanged;
+
+    void EditClicked()
+    {
+        addOrUpdateEmployee!.Employee.Id = SelectedEmployee.Id;
+        addOrUpdateEmployee!.EmployeeGroup1.Name = SelectedEmployee.Name;
+        addOrUpdateEmployee!.EmployeeGroup1.TelephoneNumber = SelectedEmployee.TelephoneNumber;
+        addOrUpdateEmployee!.EmployeeGroup1.FileNumber = SelectedEmployee.FileNumber;
+        addOrUpdateEmployee!.EmployeeGroup1.Address = SelectedEmployee.Address;
+        addOrUpdateEmployee!.EmployeeGroup1.Photo = SelectedEmployee.Photo;
+        addOrUpdateEmployee!.EmployeeGroup1.CivilId = SelectedEmployee.CivilId;
+
+
+        addOrUpdateEmployee!.EmployeeGroup2.JobName = SelectedEmployee.JobName;
+        addOrUpdateEmployee!.EmployeeGroup2.Other = SelectedEmployee.Other;
+
+
+        addOrUpdateEmployee!.GeneralDepartment = SelectedEmployee.Branch!.Department!.GeneralDepartment!.Name;
+        addOrUpdateEmployee!.Department = SelectedEmployee.Branch!.Department!.Name;
+        addOrUpdateEmployee!.Branch = SelectedEmployee.Branch!.Name;
+
+
+        addOrUpdateEmployee!.Country = SelectedEmployee.Town!.City!.Country!.Name;
+        addOrUpdateEmployee!.City = SelectedEmployee.Town!.City!.Name;
+        addOrUpdateEmployee!.Town = SelectedEmployee.Town!.Name;
+
+        addOrUpdateEmployee.Title = "Update";
+        SelectedEmployee = new();
+        contextMenu!.CloseContextMenu();
+        ShowAddOrUpdatePage = true;
+        ShowMainPage = false;
+    }
+
+    private async Task DeleteClicked()
+    {
+        contextMenu.CloseContextMenu();
+        bool confirm = await dialogService.ConfirmAsync($"You sure you want to delete{SelectedEmployee.Name}?", "Confirm Delete");
+        if (!confirm) return;
+
+        var response = await branchService.DeleteById(SelectedEmployee.Id, Constants.EmployeeBaseUrl);
+        var result = await DisplayMessage(response.Flag, response.Message);
+        if (result)
+        {
+            SelectedEmployee = new();
+            await LoadEmployees();
+        }
+    }
+
+
+
+    public bool ShowDetailsPage { get; set; } = false;
+    private void ViewClicked()
+    {
+        Employee = SelectedEmployee;
+        contextMenu!.CloseContextMenu();
+        ShowDetailsPage = true;
+        ShowMainPage = false;
+        SelectedEmployee = new();
+    }
+
+    
+    void HandleDetailsPageCloseBtnClicked()
+    {
+        ShowDetailsPage = false;
+        ShowMainPage = true;
+    }
+
+    OvertimeDialog? overtimeDialog;
+    Overtime Overtime = new();
+    List<OvertimeType> OvertimeTypes = [];
+    private void AddOvertimeClicked()
+    {
+        Overtime.EmployeeId = SelectedEmployee.Id;
+        contextMenu!.CloseContextMenu();
+        overtimeDialog!.OpenDialog();
+    }
+
+    SanctionDialog? sanctionDialog;
+    Sanction Sanction = new();
+    List<SanctionType> SanctionTypes = [];
+    private void AddSanctionClicked()
+    {
+        Sanction.EmployeeId = SelectedEmployee.Id;
+        contextMenu!.CloseContextMenu();
+        sanctionDialog!.OpenDialog();
+    }
+
+    VacationDialog? vacationDialog;
+    Vacation Vacation = new();
+    List<VacationType> VacationTypes = [];
+    private void AddVacationClicked()
+    {
+        Vacation.EmployeeId = SelectedEmployee.Id;
+        contextMenu!.CloseContextMenu();
+        vacationDialog!.OpenDialog();
+    }
+
+    async Task SaveVacationEvent(Vacation item)
+    {
+        item.EmployeeId = SelectedEmployee.Id;
+        var (flag, message) = await vacationService.Insert(item, Constants.VacationBaseUrl);
+        var response = await DisplayMessage(flag, message);
+        if (response)
+        {
+            SelectedEmployee = new();
+            Vacation = new();
+            vacationDialog!.CloseDialog();
+        }
+    }
+
+
+    async Task SaveOvertimeEvent(Overtime item)
+    {
+        item.EmployeeId = SelectedEmployee.Id;
+        var (flag, message) = await overtimeService.Insert(item, Constants.OvertimeBaseUrl);
+        var response = await DisplayMessage(flag, message);
+        if (response)
+        {
+            SelectedEmployee = new();
+            Overtime = new();
+            overtimeDialog!.CloseDialog();
+        }
+    }
+
+    async Task SaveSanctionEvent(Sanction item)
+    {
+        item.EmployeeId = SelectedEmployee.Id;
+        var (flag, message) = await sanctionService.Insert(item, Constants.SanctionBaseUrl);
+        var response = await DisplayMessage(flag, message);
+        if (response)
+        {
+            SelectedEmployee = new();
+            Sanction = new();
+            sanctionDialog!.CloseDialog();
+        }
+    }
+
+    private async Task GetOvertimeTypes() => OvertimeTypes = await overtimeTypeService.GetAll(Constants.OvertimeTypeBaseUrl);
+
+    private async Task GetVacationTypes() => VacationTypes = await vacationTypeService.GetAll(Constants.VacationTypeBaseUrl);
+
+    private async Task GetSanctionTypes() => SanctionTypes = await sanctionTypeService.GetAll(Constants.SanctionTypeBaseUrl);
+
+}
