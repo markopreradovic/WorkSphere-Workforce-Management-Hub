@@ -1,101 +1,331 @@
-﻿<div class="container-fluid">
+﻿<div class="container-fluid dashboard-container">
 	<div class="row">
-
 		<div class="col-lg-2 cursorStyle">
-			<div class="card border-primary" @onclick="() => allState.EmployeeClicked()">
+			<div class="card dashboard-card employees-card" @onclick="() => allState.EmployeeClicked()">
 				<div class="card-header">
-					<i class="bi bi-people text-primary"></i> Employees
-					<span class="badge bg-dark fs-6">@Employees.Count</span>
+					<div class="card-icon">
+						<i class="bi bi-people"></i>
+					</div>
+					<div class="card-content">
+						<span class="card-title">Employees</span>
+						<span class="badge badge-count">@Employees.Count</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="col-lg-2 cursorStyle">
-			<div class="card border-success" @onclick="VacationClicked">
+			<div class="card dashboard-card vacation-card" @onclick="VacationClicked">
 				<div class="card-header">
-					<i class="bi bi-backpack3 text-success"></i> Vacation
-					<span class="badge bg-dark fs-6">@Vacations.Count</span>
+					<div class="card-icon">
+						<i class="bi bi-backpack3"></i>
+					</div>
+					<div class="card-content">
+						<span class="card-title">Vacation</span>
+						<span class="badge badge-count">@Vacations.Count</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="col-lg-2 cursorStyle">
-			<div class="card border-danger" @onclick="OvertimeClicked">
+			<div class="card dashboard-card overtime-card" @onclick="OvertimeClicked">
 				<div class="card-header">
-					<i class="bi bi-stopwatch text-danger"></i> Overtime
-					<span class="badge bg-dark fs-6">@Overtimes.Count</span>
+					<div class="card-icon">
+						<i class="bi bi-stopwatch"></i>
+					</div>
+					<div class="card-content">
+						<span class="card-title">Overtime</span>
+						<span class="badge badge-count">@Overtimes.Count</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="col-lg-2 cursorStyle">
-			<div class="card border-warning" @onclick="HealthClicked">
+			<div class="card dashboard-card health-card" @onclick="HealthClicked">
 				<div class="card-header">
-					<i class="bi bi-hospital text-warning"></i> Health
-					<span class="badge bg-dark fs-6">@Health.Count</span>
+					<div class="card-icon">
+						<i class="bi bi-hospital"></i>
+					</div>
+					<div class="card-content">
+						<span class="card-title">Health</span>
+						<span class="badge badge-count">@Health.Count</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="col-lg-2 cursorStyle">
-			<div class="card border-info" @onclick="SanctionClicked">
+			<div class="card dashboard-card sanction-card" @onclick="SanctionClicked">
 				<div class="card-header">
-					<i class="bi bi-octagon text-info"></i> Sanctions
-					<span class="badge bg-dark fs-6">@Sanctions.Count</span>
+					<div class="card-icon">
+						<i class="bi bi-octagon"></i>
+					</div>
+					<div class="card-content">
+						<span class="card-title">Sanctions</span>
+						<span class="badge badge-count">@Sanctions.Count</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 		<div class="col-lg-2 cursorStyle">
-			<div class="card border-dark" @onclick="DepartmentClicked">
+			<div class="card dashboard-card department-card" @onclick="DepartmentClicked">
 				<div class="card-header">
-					<i class="bi bi-slack text-dark"></i> Departments
-					<span class="badge bg-dark fs-6">@Departments.Count</span>
+					<div class="card-icon">
+						<i class="bi bi-slack"></i>
+					</div>
+					<div class="card-content">
+						<span class="card-title">Departments</span>
+						<span class="badge badge-count">@Departments.Count</span>
+					</div>
 				</div>
 			</div>
 		</div>
-
 	</div>
 </div>
 
 <style>
+	.dashboard-container {
+		padding: 2rem;
+		animation: fadeIn 0.6s ease-out;
+	}
+
 	.cursorStyle {
 		cursor: pointer;
+		margin-bottom: 1rem;
+	}
+
+	/* Dashboard Cards */
+	.dashboard-card {
+		background: linear-gradient(145deg, #16213e 0%, #1a1a2e 100%);
+		border: 2px solid rgba(233, 69, 96, 0.3);
+		border-radius: 16px;
+		overflow: hidden;
+		transition: all 0.4s ease;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+		height: 140px;
+	}
+
+		.dashboard-card:hover {
+			transform: translateY(-8px) scale(1.02);
+			box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+		}
+
+		.dashboard-card .card-header {
+			background: transparent;
+			border: none;
+			padding: 1.5rem;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+		}
+
+	/* Card Icons */
+	.card-icon {
+		font-size: 3rem;
+		margin-bottom: 0.5rem;
+		transition: all 0.3s ease;
+	}
+
+	.dashboard-card:hover .card-icon {
+		transform: scale(1.2) rotateY(360deg);
+	}
+
+	.card-icon i {
+		filter: drop-shadow(0 0 8px currentColor);
+	}
+
+	/* Card Content */
+	.card-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.card-title {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #e0e0e0;
+	}
+
+	.badge-count {
+		background: rgba(233, 69, 96, 0.3);
+		color: #ff6b81;
+		padding: 0.4rem 0.8rem;
+		border-radius: 20px;
+		font-size: 1rem;
+		font-weight: 700;
+		border: 2px solid rgba(233, 69, 96, 0.5);
+		box-shadow: 0 2px 10px rgba(233, 69, 96, 0.3);
+		transition: all 0.3s ease;
+	}
+
+	.dashboard-card:hover .badge-count {
+		background: rgba(233, 69, 96, 0.5);
+		transform: scale(1.1);
+	}
+
+	/* Individual Card Colors */
+	.employees-card {
+		border-color: rgba(13, 110, 253, 0.5);
+		animation: slideInCard 0.6s ease-out 0.1s both;
+	}
+
+		.employees-card:hover {
+			border-color: #0d6efd;
+			box-shadow: 0 12px 35px rgba(13, 110, 253, 0.4);
+		}
+
+		.employees-card .card-icon i {
+			color: #0d6efd;
+		}
+
+	.vacation-card {
+		border-color: rgba(25, 135, 84, 0.5);
+		animation: slideInCard 0.6s ease-out 0.2s both;
+	}
+
+		.vacation-card:hover {
+			border-color: #198754;
+			box-shadow: 0 12px 35px rgba(25, 135, 84, 0.4);
+		}
+
+		.vacation-card .card-icon i {
+			color: #198754;
+		}
+
+	.overtime-card {
+		border-color: rgba(220, 53, 69, 0.5);
+		animation: slideInCard 0.6s ease-out 0.3s both;
+	}
+
+		.overtime-card:hover {
+			border-color: #dc3545;
+			box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
+		}
+
+		.overtime-card .card-icon i {
+			color: #dc3545;
+		}
+
+	.health-card {
+		border-color: rgba(255, 193, 7, 0.5);
+		animation: slideInCard 0.6s ease-out 0.4s both;
+	}
+
+		.health-card:hover {
+			border-color: #ffc107;
+			box-shadow: 0 12px 35px rgba(255, 193, 7, 0.4);
+		}
+
+		.health-card .card-icon i {
+			color: #ffc107;
+		}
+
+	.sanction-card {
+		border-color: rgba(13, 202, 240, 0.5);
+		animation: slideInCard 0.6s ease-out 0.5s both;
+	}
+
+		.sanction-card:hover {
+			border-color: #0dcaf0;
+			box-shadow: 0 12px 35px rgba(13, 202, 240, 0.4);
+		}
+
+		.sanction-card .card-icon i {
+			color: #0dcaf0;
+		}
+
+	.department-card {
+		border-color: rgba(233, 69, 96, 0.5);
+		animation: slideInCard 0.6s ease-out 0.6s both;
+	}
+
+		.department-card:hover {
+			border-color: #e94560;
+			box-shadow: 0 12px 35px rgba(233, 69, 96, 0.4);
+		}
+
+		.department-card .card-icon i {
+			color: #e94560;
+		}
+
+	/* Animations */
+	@@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+
+	@@keyframes slideInCard {
+		from {
+			opacity: 0;
+			transform: translateY(30px) scale(0.9);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0) scale(1);
+		}
+	}
+
+	/* Responsive */
+	@@media (max-width: 992px) {
+		.col-lg-2 {
+			flex: 0 0 50%;
+			max-width: 50%;
+		}
+	}
+
+	@@media (max-width: 576px) {
+		.col-lg-2 {
+			flex: 0 0 100%;
+			max-width: 100%;
+		}
+
+		.dashboard-card {
+			height: 120px;
+		}
+
+		.card-icon {
+			font-size: 2.5rem;
+		}
+
+		.card-title {
+			font-size: 1rem;
+		}
 	}
 </style>
 
-
 @code {
-
 	public List<Employee> Employees { get; set; } = new();
 	public List<Department> Departments { get; set; } = new();
 	public List<Overtime> Overtimes { get; set; } = new();
 	public List<Sanction> Sanctions { get; set; } = new();
 	public List<Vacation> Vacations { get; set; } = new();
 	public List<Doctor> Health { get; set; } = new();
-
 	protected async override Task OnInitializedAsync()
 	{
 		allState.Action += StateHasChanged;
 		await LoadDefaults();
 	}
-
 	async Task LoadDefaults()
 	{
 		Employees = await employeeService.GetAll(Constants.EmployeeBaseUrl);
 		Departments = await departmentService.GetAll(Constants.DepartmentBaseUrl);
-		Overtimes = await overtimeService.GetAll(Constants.OvertimeBaseUrl);//
+		Overtimes = await overtimeService.GetAll(Constants.OvertimeBaseUrl);
 		Sanctions = await sanctionService.GetAll(Constants.SanctionBaseUrl);
 		Vacations = await vacationService.GetAll(Constants.VacationBaseUrl);
 		Health = await doctorService.GetAll(Constants.DoctorBaseUrl);
 	}
-
 	void HealthClicked() => allState.HealthClicked();
 	void OvertimeClicked() => allState.OvertimeClicked();
 	void SanctionClicked() => allState.SanctionClicked();
 	void VacationClicked() => allState.VacationClicked();
 	void DepartmentClicked() => allState.DepartmentClicked();
-
-
 	public void Dispose() => allState.Action -= StateHasChanged;
 }

@@ -9,48 +9,49 @@
         <div class="container-fluid mt-5">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card-header">
-                        <button class="btn btn-outline-success" @onclick="ShowAddOrUpdateEmployeeButtonClicked">
-                            <i class="bi bi-plus-circle-dotted">Add Employee</i>
-                        </button>
-                    </div>  @* <- delete div *@ 
-                            <div class="card-body">
-                        @{
-                            var Tool = (new List<string>() { "Search", "ExcelExport", "PdfExport", "Print" });
-                        }
-                        <SfGrid DataSource="@Employees" AllowPaging="true" AllowSorting="true" Toolbar="@Tool" AllowExcelExport="true" AllowPdfExport="true" @ref="DefaultGrid">
-                            <GridColumns>
-                                <GridColumn HeaderText="Employee Image">
-                                    <Template>
-                                        @{
-                                            var employee = (context as Employee);
-                                            <div class="image">
-                                                <img src="@employee!.Photo" alt="@employee.Name" width="150" height="150"/>
-                                            </div>
-                                        }
-                                    </Template>
-                                </GridColumn>
-                                <GridColumn Field=@nameof(Employee.CivilId) HeaderText="Civil Id"></GridColumn>
-                                <GridColumn Field=@nameof(Employee.FileNumber) HeaderText="File Number"></GridColumn>
-                                <GridColumn Field=@nameof(Employee.Name) HeaderText="Name"></GridColumn>
-                                <GridColumn Field=@nameof(Employee.TelephoneNumber) HeaderText="Telephone"></GridColumn>
-                                <GridColumn Field=@nameof(Employee.JobName) HeaderText="Job Name"></GridColumn>
-                                <GridColumn Field=@nameof(Employee.Branch.Name) HeaderText="Branch"></GridColumn>
-                                <GridColumn Field=@nameof(Employee.Town.Name) HeaderText="Town"></GridColumn>
+                    <div class="card dark-card">
+                        <div class="card-header dark-card-header">
+                            <button class="btn btn-add-employee" @onclick="ShowAddOrUpdateEmployeeButtonClicked">
+                                <i class="bi bi-plus-circle-dotted"></i> Add Employee
+                            </button>
+                        </div>
+                        <div class="card-body dark-card-body">
+                            @{
+                                var Tool = (new List<string>() { "Search", "ExcelExport", "PdfExport", "Print" });
+                            }
+                            <SfGrid DataSource="@Employees" AllowPaging="true" AllowSorting="true" Toolbar="@Tool" AllowExcelExport="true" AllowPdfExport="true" @ref="DefaultGrid">
+                                <GridColumns>
+                                    <GridColumn HeaderText="Employee Image">
+                                        <Template>
+                                            @{
+                                                var employee = (context as Employee);
+                                                <div class="image employee-image-container">
+                                                    <img src="@employee!.Photo" alt="@employee.Name" width="150" height="150" />
+                                                </div>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+                                    <GridColumn Field=@nameof(Employee.CivilId) HeaderText="Civil Id"></GridColumn>
+                                    <GridColumn Field=@nameof(Employee.FileNumber) HeaderText="File Number"></GridColumn>
+                                    <GridColumn Field=@nameof(Employee.Name) HeaderText="Name"></GridColumn>
+                                    <GridColumn Field=@nameof(Employee.TelephoneNumber) HeaderText="Telephone"></GridColumn>
+                                    <GridColumn Field=@nameof(Employee.JobName) HeaderText="Job Name"></GridColumn>
+                                    <GridColumn Field=@nameof(Employee.Branch.Name) HeaderText="Branch"></GridColumn>
+                                    <GridColumn Field=@nameof(Employee.Town.Name) HeaderText="Town"></GridColumn>
 
-                                <GridColumn HeaderText="Menu" HeaderTextAlign="TextAlign.Left">
-                                    <Template>
-                                        @{
-                                            var employee = (context as Employee);
-                                            <i class="bi bi-menu-down textprimary" id="cursorStyle" @onclick="() => ShowMenuPopUp(employee!)"></i>
-                                        }
-                                    </Template>
-                                </GridColumn>
-                            </GridColumns>
-                        </SfGrid>
+                                    <GridColumn HeaderText="Menu" HeaderTextAlign="TextAlign.Left">
+                                        <Template>
+                                            @{
+                                                var employee = (context as Employee);
+                                                <i class="bi bi-menu-down menu-icon" id="cursorStyle" @onclick="() => ShowMenuPopUp(employee!)"></i>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                        <div class="card-footer dark-card-footer"></div>
                     </div>
-                    <div class="card-footer"></div>
-                    
                 </div>
             </div>
         </div>
@@ -73,14 +74,14 @@
                          HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent">
 </AddOrUpdateEmployeePage>
 
-<ContextMenu @ref="contextMenu" 
+<ContextMenu @ref="contextMenu"
              HandleDeleteClicked="DeleteClicked"
              HandleEditClicked="EditClicked"
              HandleViewClicked="ViewClicked"
              HandleAddHealthClicked="AddHealthClicked"
              HandleAddOvertimeClicked="AddOvertimeClicked"
              HandleAddSanctionClicked="AddSanctionClicked"
-             HandleAddVacationClicked="AddVacationClicked"/>
+             HandleAddVacationClicked="AddVacationClicked" />
 
 <EmployeeDetailPage EmployeeDetails="Employee"
                     ShowDetailsPage="ShowDetailsPage"
@@ -90,6 +91,215 @@
 <OvertimeDialog @ref="overtimeDialog" ItemModel="Overtime" OvertimeTypes="OvertimeTypes" HandleSaveOperationEvent="SaveOvertimeEvent" />
 <SanctionDialog @ref="sanctionDialog" ItemModel="Sanction" SanctionTypes="SanctionTypes" HandleSaveOperationEvent="SaveSanctionEvent" />
 <VacationDialog @ref="vacationDialog" ItemModel="Vacation" VacationTypes="VacationTypes" HandleSaveOperationEvent="SaveVacationEvent" />
+
+<style>
+    /* Dark Mode Theme */
+    body {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+        min-height: 100vh;
+    }
+
+    .dark-card {
+        background: linear-gradient(145deg, #16213e 0%, #1a1a2e 100%);
+        border: 1px solid rgba(233, 69, 96, 0.3);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+        animation: fadeInCard 0.6s ease-out;
+    }
+
+    .dark-card-header {
+        background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+        border-bottom: 2px solid rgba(233, 69, 96, 0.4);
+        padding: 1.5rem;
+    }
+
+    .dark-card-body {
+        background: #1a1a2e;
+        padding: 2rem;
+    }
+
+    .dark-card-footer {
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        border-top: 2px solid rgba(233, 69, 96, 0.4);
+        padding: 1rem;
+    }
+
+    /* Add Employee Button */
+    .btn-add-employee {
+        background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    }
+
+        .btn-add-employee:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+            background: linear-gradient(135deg, #ff6b81 0%, #e94560 100%);
+        }
+
+        .btn-add-employee:active {
+            transform: translateY(0);
+        }
+
+        .btn-add-employee i {
+            margin-right: 0.5rem;
+        }
+
+    /* Employee Image Container */
+    .employee-image-container {
+        padding: 0.5rem;
+    }
+
+        .employee-image-container img {
+            border-radius: 12px;
+            border: 3px solid rgba(233, 69, 96, 0.5);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+            .employee-image-container img:hover {
+                transform: scale(1.05);
+                border-color: #e94560;
+                box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+            }
+
+    /* Menu Icon */
+    .menu-icon {
+        color: #e94560;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 0 3px rgba(233, 69, 96, 0.5));
+    }
+
+        .menu-icon:hover {
+            color: #ff6b81;
+            transform: scale(1.2) rotate(180deg);
+            filter: drop-shadow(0 0 8px rgba(233, 69, 96, 0.8));
+        }
+
+    #cursorStyle {
+        cursor: pointer;
+    }
+
+    /* Syncfusion Grid Dark Theme Override */
+    .e-grid {
+        background: transparent !important;
+        color: #e0e0e0 !important;
+    }
+
+        .e-grid .e-gridheader {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-color: rgba(233, 69, 96, 0.3) !important;
+        }
+
+        .e-grid .e-headercell {
+            background: transparent !important;
+            color: #ff6b81 !important;
+            font-weight: 600;
+            border-color: rgba(233, 69, 96, 0.2) !important;
+        }
+
+        .e-grid .e-row {
+            background: rgba(22, 33, 62, 0.4) !important;
+            color: #e0e0e0 !important;
+            border-color: rgba(233, 69, 96, 0.1) !important;
+            transition: all 0.3s ease;
+        }
+
+            .e-grid .e-row:hover {
+                background: rgba(233, 69, 96, 0.15) !important;
+                transform: translateX(5px);
+            }
+
+        .e-grid .e-altrow {
+            background: rgba(15, 52, 96, 0.3) !important;
+        }
+
+            .e-grid .e-altrow:hover {
+                background: rgba(233, 69, 96, 0.15) !important;
+            }
+
+        .e-grid .e-rowcell {
+            border-color: rgba(233, 69, 96, 0.1) !important;
+            color: #e0e0e0 !important;
+        }
+
+        .e-grid .e-gridpager {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
+            color: #e0e0e0 !important;
+            border-color: rgba(233, 69, 96, 0.3) !important;
+        }
+
+        .e-grid .e-pager .e-numericitem,
+        .e-grid .e-pager .e-currentitem {
+            background: rgba(233, 69, 96, 0.2) !important;
+            color: #e0e0e0 !important;
+            border-color: rgba(233, 69, 96, 0.3) !important;
+        }
+
+            .e-grid .e-pager .e-numericitem:hover {
+                background: rgba(233, 69, 96, 0.4) !important;
+                color: #ff6b81 !important;
+            }
+
+        .e-grid .e-toolbar {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
+            border-color: rgba(233, 69, 96, 0.3) !important;
+        }
+
+            .e-grid .e-toolbar .e-btn {
+                background: rgba(233, 69, 96, 0.2) !important;
+                color: #e0e0e0 !important;
+                border-color: rgba(233, 69, 96, 0.3) !important;
+                transition: all 0.3s ease;
+            }
+
+                .e-grid .e-toolbar .e-btn:hover {
+                    background: rgba(233, 69, 96, 0.4) !important;
+                    color: #ff6b81 !important;
+                    transform: translateY(-2px);
+                }
+
+    /* Animations */
+    @@keyframes fadeInCard {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #0f3460;
+        border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #e94560 0%, #ff6b81 100%);
+        border-radius: 5px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #ff6b81 0%, #e94560 100%);
+        }
+</style>
 
 @code {
     AddOrUpdateEmployeePage? addOrUpdateEmployee;
@@ -137,7 +347,7 @@
         ShowMainPage = true;
         ShowAddOrUpdatePage = false;
         await LoadEmployees();
-        SelectedEmployee = new(); 
+        SelectedEmployee = new();
     }
 
     ContextMenu? contextMenu;
@@ -215,7 +425,7 @@
 
         if (successCheck)
             addOrUpdateEmployee!.ClearContent();
-        
+
     }
 
     private async Task<bool> DisplayMessage(bool flag, string message)
@@ -240,7 +450,7 @@
         ShowAddOrUpdatePage = true;
     }
 
-   
+
     DoctorDialog? doctorDialog;
     Doctor Doctor = new();
     private void AddHealthClicked()
@@ -263,7 +473,7 @@
         }
     }
 
-    
+
 
     public void Dispose() => allState.Action -= StateHasChanged;
 
@@ -325,7 +535,7 @@
         SelectedEmployee = new();
     }
 
-    
+
     void HandleDetailsPageCloseBtnClicked()
     {
         ShowDetailsPage = false;
