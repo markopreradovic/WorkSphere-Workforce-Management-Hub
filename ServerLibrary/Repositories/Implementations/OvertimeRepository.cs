@@ -1,15 +1,8 @@
 ﻿using BaseLibrary.Entities;
 using BaseLibrary.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using ServerLibrary.Data;
 using ServerLibrary.Repositories.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace ServerLibrary.Repositories.Implementations
 {

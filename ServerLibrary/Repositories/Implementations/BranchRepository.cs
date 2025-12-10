@@ -1,8 +1,6 @@
 ﻿using BaseLibrary.Entities;
 using BaseLibrary.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using ServerLibrary.Data;
 using ServerLibrary.Repositories.Contracts;
 

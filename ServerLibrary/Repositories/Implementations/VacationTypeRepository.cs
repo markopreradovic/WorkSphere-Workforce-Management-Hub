@@ -3,12 +3,6 @@ using BaseLibrary.Responses;
 using Microsoft.EntityFrameworkCore;
 using ServerLibrary.Data;
 using ServerLibrary.Repositories.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ServerLibrary.Repositories.Implementations
 {
     public class VacationTypeRepository(AppDbContext appDbContext) : IGenericRepositoryInterface<VacationType>
@@ -29,7 +23,6 @@ namespace ServerLibrary.Repositories.Implementations
         public async Task<VacationType> GetById(int id) =>
             await appDbContext.VacationTypes.FindAsync(id);
 
-
         public async Task<GeneralResponse> Insert(VacationType item)
         {
             if (!await CheckName(item.Name!)) return new GeneralResponse(false, "Vacation Type already added");
@@ -45,9 +38,6 @@ namespace ServerLibrary.Repositories.Implementations
             await Commit();
             return Success();
         }
-
-
-
         private async Task Commit() => await appDbContext.SaveChangesAsync();
         private static GeneralResponse NotFound() => new(false, "Sorry data not found");
         private static GeneralResponse Success() => new(true, "Process completed");

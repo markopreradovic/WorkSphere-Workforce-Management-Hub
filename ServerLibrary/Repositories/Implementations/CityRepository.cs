@@ -1,10 +1,8 @@
-﻿using BaseLibrary.DTOs;
-using BaseLibrary.Entities;
+﻿using BaseLibrary.Entities;
 using BaseLibrary.Responses;
 using Microsoft.EntityFrameworkCore;
 using ServerLibrary.Data;
 using ServerLibrary.Repositories.Contracts;
-using ServerLibrary.Repositories.Implementations;
 
 namespace ServerLibrary.Repositories.Implementations
 {

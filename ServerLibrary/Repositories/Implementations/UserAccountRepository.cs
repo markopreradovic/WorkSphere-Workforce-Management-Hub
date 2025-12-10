@@ -3,7 +3,6 @@ using BaseLibrary.Entities;
 using BaseLibrary.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using ServerLibrary.Data;
 using ServerLibrary.Helpers;
@@ -25,7 +24,6 @@ namespace ServerLibrary.Repositories.Implementations
             var checkUser = await FindUserByEmail(user.Email!);
             if(checkUser != null) return new GeneralResponse(false, "User with this email already exists (already registered).");
 
-            //Save user
             var applicationUser = await AddToDatabase(new ApplicationUser()
             {
                 Fullname = user.Fullname,
@@ -33,7 +31,6 @@ namespace ServerLibrary.Repositories.Implementations
                 Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
             });
 
-            //check, create and assign role
             var checkAdminRole = await appDbContext.SystemRoles.FirstOrDefaultAsync(_ => _.Name!.Equals(Constants.Admin));
             if (checkAdminRole is null)
             {
@@ -65,7 +62,6 @@ namespace ServerLibrary.Repositories.Implementations
             var applicationUser = await FindUserByEmail(user.Email!);
             if (applicationUser is null) return new LoginResponse(false, "User not found");
 
-            //Verify password
             if (!BCrypt.Net.BCrypt.Verify(user.Password, applicationUser.Password)) 
                 return new LoginResponse(false, "Email/Password not valid");
 
@@ -78,7 +74,6 @@ namespace ServerLibrary.Repositories.Implementations
             string jwtToken = GenerateToken(applicationUser, getRoleName!.Name!);
             string refreshToken = GenerateRefreshToken();
 
-            //Save refresh token
             var findUser = await appDbContext.RefreshTokenInfos.FirstOrDefaultAsync(_ => _.UserId == applicationUser.Id);
             if (findUser is not null)
             {
@@ -141,7 +136,6 @@ namespace ServerLibrary.Repositories.Implementations
             var findToken = await appDbContext.RefreshTokenInfos.FirstOrDefaultAsync(_ => _.Token!.Equals(token.Token));
             if (findToken is null) return new LoginResponse(false, "Refresh token is required");
 
-            //Get user details
             var user = await appDbContext.ApplicationUsers.FirstOrDefaultAsync(_ => _.Id == findToken.UserId);
             if (user is null) return new LoginResponse(false, "Refresh token could not be generated because user not found");
 
@@ -182,7 +176,6 @@ namespace ServerLibrary.Repositories.Implementations
             if (user == null)
                 return new GeneralResponse(false, "Invalid request");
 
-            // Find role (case-insensitive)
             var roles = await SystemRoles();
             var getRole = roles
                 .FirstOrDefault(r => r.Name!.ToLower() == user.Role!.ToLower());
@@ -190,14 +183,12 @@ namespace ServerLibrary.Repositories.Implementations
             if (getRole == null)
                 return new GeneralResponse(false, $"Role '{user.Role}' not found");
 
-            // Find existing user-role mapping
             var userRole = await appDbContext.UserRoles
                 .FirstOrDefaultAsync(u => u.UserId == user.UserId);
 
             if (userRole == null)
                 return new GeneralResponse(false, "User role mapping not found");
 
-            // Update role
             userRole.RoleId = getRole.Id;
             await appDbContext.SaveChangesAsync();
 
@@ -215,7 +206,6 @@ namespace ServerLibrary.Repositories.Implementations
             await appDbContext.SaveChangesAsync();
             return new GeneralResponse(true, "User successfully deleted!");
         }
-
         private async Task<List<SystemRole>> SystemRoles() => await appDbContext.SystemRoles.AsNoTracking().ToListAsync();
         private async Task<List<UserRole>> UserRoles() => await appDbContext.UserRoles.AsNoTracking().ToListAsync();
         private async Task<List<ApplicationUser>> GetAplicationUsers() => await appDbContext.ApplicationUsers.AsNoTracking().ToListAsync();
