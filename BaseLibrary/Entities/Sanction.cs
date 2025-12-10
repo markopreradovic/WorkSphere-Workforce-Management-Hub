@@ -11,7 +11,6 @@ namespace BaseLibrary.Entities
         public string Punishment { get; set; } = string.Empty;
         [Required]
         public DateTime PunishmentDate { get; set; }
-        // Many to one relationship with Vacation Type
         public SanctionType? SanctionType { get; set; }
         public int SanctionTypeId { get; set; }
     } 

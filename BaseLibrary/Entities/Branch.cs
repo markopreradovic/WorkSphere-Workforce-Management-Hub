@@ -9,11 +9,9 @@ namespace BaseLibrary.Entities
 {
     public class Branch : BaseEntity
     {
-        //Many to One Relationship with Department
         public int DepartmentId { get; set; }
         public Department? Department { get; set; }
 
-        // One to Many Relationship with Employees
         [JsonIgnore]
         public List<Employee>? Employees { get; set; }
     }

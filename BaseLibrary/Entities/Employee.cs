@@ -15,9 +15,6 @@ namespace BaseLibrary.Entities
         [Required]
         public string FileNumber { get; set; } = string.Empty;
 
-        //[Required]
-        //public string Fullname { get; set; } = string.Empty;
-
         [Required]
         public string JobName { get; set; } = string.Empty;
 
@@ -31,8 +28,6 @@ namespace BaseLibrary.Entities
         public string Photo { get; set; } = string.Empty;
 
         public string? Other { get; set; }
-
-        //Many to One Relationship with Branch
 
         public Branch? Branch { get; set; }
         public int BranchId { get; set; }

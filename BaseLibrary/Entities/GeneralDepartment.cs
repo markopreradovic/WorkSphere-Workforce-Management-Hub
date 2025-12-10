@@ -9,7 +9,6 @@ namespace BaseLibrary.Entities
 {
     public class GeneralDepartment : BaseEntity
     {
-        //One to Many Relationship with Departments
         [JsonIgnore]
         public List<Department>? Departments { get; set; }
     }

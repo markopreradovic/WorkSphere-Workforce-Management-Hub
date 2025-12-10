@@ -14,12 +14,8 @@ namespace BaseLibrary.Entities
         [Required]
         public int NumberOfDays { get; set; }
         public DateTime EndDate => StartDate.AddDays(NumberOfDays);
-
-        // Many to one relationship with Vacation Type
-
         public VacationType? VacationType { get; set; }
         [Required]
-
         public int VacationTypeId { get; set; }
 
     }

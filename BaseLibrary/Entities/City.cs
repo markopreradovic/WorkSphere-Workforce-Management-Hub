@@ -9,11 +9,9 @@ namespace BaseLibrary.Entities
 {
     public class City : BaseEntity
     {
-        //Many to One Relationship with Country
         public int CountryId { get; set; }
         public Country? Country { get; set; }
 
-        // One to Many Relationship with Towns
         [JsonIgnore]
         public List<Town>? Towns { get; set; }
     }
