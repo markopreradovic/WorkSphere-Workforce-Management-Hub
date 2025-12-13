@@ -20,6 +20,7 @@
                                 var Tool = (new List<string>() { "Search", "ExcelExport", "PdfExport", "Print" });
                             }
                             <SfGrid DataSource="@Employees" AllowPaging="true" AllowSorting="true" Toolbar="@Tool" AllowExcelExport="true" AllowPdfExport="true" @ref="DefaultGrid">
+                                <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="Employee"></GridEvents>
                                 <GridColumns>
                                     <GridColumn HeaderText="Employee Image">
                                         <Template>
@@ -154,6 +155,9 @@
     /* Employee Image Container */
     .employee-image-container {
         padding: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
         .employee-image-container img {
@@ -161,6 +165,7 @@
             border: 3px solid rgba(233, 69, 96, 0.5);
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
 
             .employee-image-container img:hover {
@@ -188,84 +193,130 @@
         cursor: pointer;
     }
 
-    /* Syncfusion Grid Dark Theme Override */
+    /* Syncfusion Grid Dark Theme Override - High Contrast */
     .e-grid {
-        background: transparent !important;
-        color: #e0e0e0 !important;
+        background: #f8f9fa !important;
+        color: #1a1a1a !important;
+        border: 1px solid #dee2e6 !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
     }
 
         .e-grid .e-gridheader {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
-            border-color: rgba(233, 69, 96, 0.3) !important;
+            background: #e9ecef !important;
+            border-bottom: 2px solid #dee2e6 !important;
         }
 
         .e-grid .e-headercell {
             background: transparent !important;
-            color: #ff6b81 !important;
-            font-weight: 600;
-            border-color: rgba(233, 69, 96, 0.2) !important;
+            color: #212529 !important;
+            font-weight: 700;
+            font-size: 0.875rem;
+            letter-spacing: 0.025em;
+            text-transform: uppercase;
+            border-right: 1px solid #dee2e6 !important;
+            padding: 1rem !important;
         }
 
         .e-grid .e-row {
-            background: rgba(22, 33, 62, 0.4) !important;
-            color: #e0e0e0 !important;
-            border-color: rgba(233, 69, 96, 0.1) !important;
-            transition: all 0.3s ease;
+            background: #ffffff !important;
+            color: #212529 !important;
+            border-bottom: 1px solid #dee2e6 !important;
+            transition: all 0.2s ease;
         }
 
             .e-grid .e-row:hover {
-                background: rgba(233, 69, 96, 0.15) !important;
-                transform: translateX(5px);
+                background: #fff5f7 !important;
+                border-left: 3px solid #e94560 !important;
             }
 
         .e-grid .e-altrow {
-            background: rgba(15, 52, 96, 0.3) !important;
+            background: #f8f9fa !important;
         }
 
             .e-grid .e-altrow:hover {
-                background: rgba(233, 69, 96, 0.15) !important;
+                background: #fff5f7 !important;
+                border-left: 3px solid #e94560 !important;
             }
 
         .e-grid .e-rowcell {
-            border-color: rgba(233, 69, 96, 0.1) !important;
-            color: #e0e0e0 !important;
+            border-right: 1px solid #dee2e6 !important;
+            color: #212529 !important;
+            padding: 1rem !important;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .e-grid .e-gridpager {
-            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%) !important;
-            color: #e0e0e0 !important;
-            border-color: rgba(233, 69, 96, 0.3) !important;
+            background: #e9ecef !important;
+            color: #212529 !important;
+            border-top: 2px solid #dee2e6 !important;
+            padding: 0.75rem !important;
         }
 
-        .e-grid .e-pager .e-numericitem,
+        .e-grid .e-pager .e-numericitem {
+            background: #ffffff !important;
+            color: #495057 !important;
+            border: 1px solid #ced4da !important;
+            border-radius: 6px !important;
+            margin: 0 0.25rem !important;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
         .e-grid .e-pager .e-currentitem {
-            background: rgba(233, 69, 96, 0.2) !important;
-            color: #e0e0e0 !important;
-            border-color: rgba(233, 69, 96, 0.3) !important;
+            background: #e94560 !important;
+            color: #ffffff !important;
+            border: 1px solid #e94560 !important;
+            border-radius: 6px !important;
+            font-weight: 700;
         }
 
-            .e-grid .e-pager .e-numericitem:hover {
-                background: rgba(233, 69, 96, 0.4) !important;
-                color: #ff6b81 !important;
-            }
+        .e-grid .e-pager .e-numericitem:hover {
+            background: #f8f9fa !important;
+            color: #212529 !important;
+            border-color: #e94560 !important;
+        }
 
         .e-grid .e-toolbar {
-            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%) !important;
-            border-color: rgba(233, 69, 96, 0.3) !important;
+            background: #e9ecef !important;
+            border-bottom: 2px solid #dee2e6 !important;
+            padding: 0.75rem !important;
         }
 
             .e-grid .e-toolbar .e-btn {
-                background: rgba(233, 69, 96, 0.2) !important;
-                color: #e0e0e0 !important;
-                border-color: rgba(233, 69, 96, 0.3) !important;
-                transition: all 0.3s ease;
+                background: #ffffff !important;
+                color: #495057 !important;
+                border: 1px solid #ced4da !important;
+                border-radius: 6px !important;
+                padding: 0.5rem 1rem !important;
+                margin-right: 0.5rem !important;
+                transition: all 0.2s ease;
+                font-weight: 600;
             }
 
                 .e-grid .e-toolbar .e-btn:hover {
-                    background: rgba(233, 69, 96, 0.4) !important;
-                    color: #ff6b81 !important;
+                    background: #e9ecef !important;
+                    color: #495057 !important;
+                    border-color: #e94560 !important;
                     transform: translateY(-2px);
+                    box-shadow: 0 2px 8px rgba(233, 69, 96, 0.2);
                 }
+
+        /* Search box styling */
+        .e-grid .e-search {
+            background: #ffffff !important;
+            border: 1px solid #ced4da !important;
+            border-radius: 6px !important;
+            color: #212529 !important;
+            font-weight: 500;
+        }
+
+            .e-grid .e-search:focus {
+                border-color: #e94560 !important;
+                outline: none !important;
+                box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25) !important;
+            }
 
     /* Animations */
     @@keyframes fadeInCard {
@@ -617,5 +668,14 @@
     private async Task GetVacationTypes() => VacationTypes = await vacationTypeService.GetAll(Constants.VacationTypeBaseUrl);
 
     private async Task GetSanctionTypes() => SanctionTypes = await sanctionTypeService.GetAll(Constants.SanctionTypeBaseUrl);
+
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if (args.Item.Text == "Excel Export")
+            await DefaultGrid!.ExportToExcelAsync();
+
+        if (args.Item.Text == "PDF Export")
+            await DefaultGrid!.ExportToPdfAsync();
+    }
 
 }

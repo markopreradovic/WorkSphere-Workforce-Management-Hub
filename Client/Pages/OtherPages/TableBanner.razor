@@ -137,32 +137,40 @@
 	/* Card Content */
 	.card-content {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
-		gap: 0.5rem;
+		justify-content: center;
+		gap: 0.8rem;
+		width: 100%;
 	}
 
 	.card-title {
-		font-size: 1.1rem;
+		font-size: 1.2rem;
 		font-weight: 600;
 		color: #e0e0e0;
 	}
 
 	.badge-count {
-		background: rgba(233, 69, 96, 0.3);
-		color: #ff6b81;
-		padding: 0.4rem 0.8rem;
-		border-radius: 20px;
-		font-size: 1rem;
+		background: rgba(233, 69, 96, 0.8);
+		color: #ffffff;
+		padding: 0.3rem 0.7rem;
+		border-radius: 50%;
+		font-size: 1.1rem;
 		font-weight: 700;
-		border: 2px solid rgba(233, 69, 96, 0.5);
-		box-shadow: 0 2px 10px rgba(233, 69, 96, 0.3);
+		border: 2px solid #e94560;
+		box-shadow: 0 3px 15px rgba(233, 69, 96, 0.5);
 		transition: all 0.3s ease;
+		min-width: 35px;
+		min-height: 35px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.dashboard-card:hover .badge-count {
-		background: rgba(233, 69, 96, 0.5);
-		transform: scale(1.1);
+		background: #e94560;
+		transform: scale(1.15);
+		box-shadow: 0 4px 20px rgba(233, 69, 96, 0.7);
 	}
 
 	/* Individual Card Colors */
